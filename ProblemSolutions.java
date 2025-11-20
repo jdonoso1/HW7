@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Juan Donoso / 002
  *
  *   This java file contains the problem solutions for the methods selectionSort,
  *   mergeSortDivisibleByKFirst, asteroidsDestroyed, and numRescueCanoes methods.
@@ -37,6 +37,27 @@ public class ProblemSolutions {
         int n = values.length;
 
         for (int i = 0; i < n - 1; i++) {
+            int extremeIndex = i;
+
+            for (int j = i + 1; j < n; j++) {
+                if (ascending) {
+                    if (values[j] < values[extremeIndex]) {
+                        extremeIndex = j;
+                    }
+                } else {
+                    if (values[j] > values[extremeIndex]) {
+                        extremeIndex = j;
+                    }
+                }
+            }
+
+            int temp = values[i];
+            values[i] = values[extremeIndex];
+            values[extremeIndex] = temp;
+
+
+
+
 
             // YOU CODE GOES HERE -- COMPLETE THE INNER LOOP OF THIS
             // "SELECTION SORT" ALGORITHM.
@@ -90,8 +111,40 @@ public class ProblemSolutions {
      * The merging portion of the merge sort, divisible by k first
      */
 
-    private void mergeDivisbleByKFirst(int arr[], int k, int left, int mid, int right)
-    {
+    private void mergeDivisbleByKFirst(int arr[], int k, int left, int mid, int right) {
+
+        int[] temp = new int[right - left + 1];
+        int i = left;
+        int j = mid + 1;
+        int t = 0;
+
+        while (i <= mid && j <= right) {
+            boolean leftDiv = arr[i] % k == 0;
+            boolean rightDiv = arr[j] % k == 0;
+
+            if (leftDiv && rightDiv) {
+                // Both divisible
+                temp[t++] = arr[i++];
+            } else if (leftDiv) {
+                temp[t++] = arr[i++];
+            } else if (rightDiv) {
+                temp[t++] = arr[j++];
+            } else {
+                // Neither divisible = normal
+                if (arr[i] <= arr[j]) temp[t++] = arr[i++];
+                else temp[t++] = arr[j++];
+            }
+        }
+
+        while (i <= mid) temp[t++] = arr[i++];
+        while (j <= right) temp[t++] = arr[j++];
+
+        for (int p = 0; p < temp.length; p++) {
+            arr[left + p] = temp[p];
+        }
+    }
+
+
         // YOUR CODE GOES HERE, THIS METHOD IS NO MORE THAN THE STANDARD MERGE PORTION
         // OF A MERGESORT, EXCEPT THE NUMBERS DIVISIBLE BY K MUST GO FIRST WITHIN THE
         // SEQUENCE PER THE DISCUSSION IN THE PROLOGUE ABOVE.
@@ -102,9 +155,7 @@ public class ProblemSolutions {
         // TO CODE WITH A SPACE COMPLEXITY OF O(N LOG N), WHICH IS FINE FOR PURPOSES
         // OF THIS PROGRAMMING EXERCISES.
 
-        return;
 
-    }
 
 
     /**
@@ -154,10 +205,18 @@ public class ProblemSolutions {
 
     public static boolean asteroidsDestroyed(int mass, int[] asteroids) {
 
-        // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT()
+        Arrays.sort(asteroids);
+        long curr = mass;
 
-        return false;
+        for (int a : asteroids) {
+            if (curr >= a) {
+                curr += a;
+            } else {
+                return false;
+            }
+        }
 
+        return true;
     }
 
 
@@ -193,10 +252,29 @@ public class ProblemSolutions {
     public static int numRescueSleds(int[] people, int limit) {
 
         // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT
+        if (people.length == 0 || limit == 0) return 0;
 
-        return -1;
+        Arrays.sort(people);
+
+        int left = 0;
+        int right = people.length - 1;
+        int sleds = 0;
+
+        while (left <= right) {
+            if (people[left] + people[right] <= limit) {
+                left++;
+                right--;
+            } else {
+                right--;
+            }
+            sleds++;
+        }
+
+        return sleds;
+
+
+        // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT
 
     }
 
 } // End Class ProblemSolutions
-
